@@ -6,5 +6,9 @@
 
  To run the script python log_scrapper.py with db_path as arguement
  
- Eg : python3 log_scraper.py  db_path: test.db # Testdb uploaded in drive
+ Eg : python3 log_scraper.py  db_path: test.db # Testdb uploaded in drive 
+ 
+ For running the parse files : 
+ Change in replay_database  as self.conn = sqlite3.connect("/Users/sqlite/test.db") and run the parse(log-parser.py and log-parse.py)
+ # Testdb uploaded in drive
  
