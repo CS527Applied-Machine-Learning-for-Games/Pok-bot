@@ -10,5 +10,5 @@
  
  For running the parse files : 
  Change in replay_database  as self.conn = sqlite3.connect("/Users/sqlite/test.db") and run the parse(log-parser.py and log-parse.py)
- # Testdb uploaded in drive
+ #Testdb uploaded in drive
  
