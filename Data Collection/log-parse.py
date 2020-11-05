@@ -12,14 +12,17 @@ REPLACE = r"\|replace\|(?P<player>.+?)(a|b|c): (?P<nickname>.+?)\|(?P<pokename>.
 SWAP = r"\|swap\|(?P<player>.+?)(a|b|c): (?P<pokename>.+?)\|.+?"
 MOVE = r"\|move\|(?P<player1>.+?)(a|b|c): (?P<poke1>.+?)\|(?P<move>.+?)\|(\[of\] )*(?P<player2>.+?)(a|b|c): (?P<poke2>.+)"
 DAMAGE_MOVE = r"\|-damage\|(?P<player>.+?)(a|b|c): (?P<poke>.+?)\|(?P<remainingHealth>.+?)/(?P<totalHealth>.+)"
-DAMAGE_FROM_FAINT_MOVE = r"\|-damage\|(?P<player>.+?)(a|b|c): (?P<poke>.+?)\|0 fnt\|\[from\] (?P<move>.+)"
+DAMAGE_FROM_FAINT_MOVE = r"\|-damage\|(?P<player>.+?)(a|b|c): (?P<poke>.+?)\|(0 fnt|0)\|\[from\] (?P<move>.+)"
 DAMAGE_FROM_MOVE =  r"\|-damage\|(?P<player>.+?)(a|b|c): (?P<poke>.+?)\|(?P<remainingHealth>.+?)/(?P<totalHealth>.+?)\|\[from\] (?P<move>.+)"
-DAMAGE_FAINT = r"\|-damage\|(?P<player>.+?)(a|b|c): (?P<poke>.+?)\|0 fnt"
+DAMAGE_FAINT = r"\|-damage\|(?P<player>.+?)(a|b|c): (?P<poke>.+?)\|(0 fnt|0)"
 DAMAGE_ITEM = r"\|-damage\|(?P<player>.+?)(a|b|c): (?P<poke>.+?)\|(?P<remainingHealth>.+?)/(?P<totalHealth>.+?)\|\[from\] item: (?P<item>.+)"
-DAMAGE_ITEM_FAINT = r"\|-damage\|(?P<player>.+?)(a|b|c): (?P<poke>.+?)\|0 fnt\|\[from\] item :(?P<item>.+)"
+DAMAGE_ITEM_FAINT = r"\|-damage\|(?P<player>.+?)(a|b|c): (?P<poke>.+?)\|(0 fnt|0)\|\[from\] item :(?P<item>.+)"
 WIN =  r"\|win\|(?P<player>.+)"
-
+FORFEIT = r"\|-message\|(?P<player>.+) forfeited."
 HEALTH =r"([a-zA-Z]+)(?P<health>[0-9]+).+?"
+STATUS =  r"\|-status\|(?P<player>.+?)(a|b|c): (?P<pokename>.+?)\|.*?"
+CURESTATUS =  r"\|-curestatus\|(?P<player>.+?)(a|b|c): (?P<pokename>.+?)\|.*?"
+
 healthOne = {}
 healthTwo ={}
 nick_names ={}
@@ -46,6 +49,10 @@ def handle_line(lines):
     global noOfFaintedPokemonForTeam1 
     global noOfFaintedPokemonForTeam2
     global turn
+    global noofStatsPokemon1 
+    global noofStatsPokemon2
+    global statsTeam1 
+    global statsTeam2
     for line in lines:
         # print(line)
         match = re.match(USER_PLAYER, line)
@@ -57,20 +64,69 @@ def handle_line(lines):
             else:
                 user2 = nickname
             continue
+        match = re.match(STATUS, line)
+        if match:
+            player = match.group("player")
+            pokemon = match.group("pokename").split("-")[0]
+            if(pokemon == ''):
+                pokemon = match.group("pokename")
+
+            if("p1" in player and  pokemon not in statsTeam1):
+                noofStatsPokemon1 +=1
+                statsTeam1.append(pokemon)
+            else:
+                if(pokemon not in statsTeam2):
+                    noofStatsPokemon2 +=1
+                    statsTeam2.append(pokemon)
+            continue
+        match = re.match(CURESTATUS, line)
+        if match:
+            
+            player = match.group("player")
+            pokemon = match.group("pokename").split("-")[0]
+            if("p1" in player and  pokemon not in statsTeam1):
+                noofStatsPokemon1 +=1
+                statsTeam1.append(pokemon)
+            else:
+                if(pokemon not in statsTeam2):
+                    noofStatsPokemon2 +=1
+                    statsTeam2.append(pokemon)
+            continue
+        
+        match = re.match(FORFEIT,line)
+        if match : 
+            player = match.group("player")
+            if(len(healthOne) !=0 and len(healthTwo) != 0):
+                teamOneHealth = sum(healthOne.values())+ 100 * (6-len(healthOne.values()))
+                teamTwoHealth = sum(healthTwo.values())+ 100 * (6-len(healthTwo.values()))
+                
+                team1.append([turn,noOfTeam1Pokemon,noOfFaintedPokemonForTeam1,noofStatsPokemon1,teamOneHealth])
+                team2.append([turn,noOfTeam2Pokemon,noOfFaintedPokemonForTeam2,noofStatsPokemon2,teamTwoHealth])
+                if("p2" in player):
+                    ans = ["for",team1,team2]
+                    break
+                else:
+                    ans =  ["for",team2,team1]
+                    break
+            else:
+                ans = []
+
         match = re.match(WIN,line)
         if match : 
             # print('ee11')
             player = match.group("player")
             if(len(healthOne) !=0 and len(healthTwo) != 0):
-                teamOneHealth = sum(healthOne.values())/len(healthOne.values())
-                teamTwoHealth = sum(healthTwo.values())/len(healthTwo.values())
-                team1.append([turn,noOfTeam1Pokemon,noOfFaintedPokemonForTeam1,teamOneHealth])
-                team2.append([turn,noOfTeam2Pokemon,noOfFaintedPokemonForTeam2,teamTwoHealth])
+                
+                teamOneHealth = sum(healthOne.values())+ 100* (6-len(healthOne.values()))
+                teamTwoHealth = sum(healthTwo.values())+ 100* (6-len(healthTwo.values()))
+                team1.append([turn,noOfTeam1Pokemon,noOfFaintedPokemonForTeam1,noofStatsPokemon1,teamOneHealth])
+                team2.append([turn,noOfTeam2Pokemon,noOfFaintedPokemonForTeam2,noofStatsPokemon2,teamTwoHealth])
+                
                 if("p1" in player):
-                    ans = [team1,team2]
+                    ans = ["win",team1,team2]
                     break
                 else:
-                    ans =  [team2,team1]
+                    ans =  ["win",team2,team1]
                     break
             else:
                 ans = []
@@ -79,26 +135,29 @@ def handle_line(lines):
         if(match): 
             
             if(len(healthOne) !=0 and len(healthTwo) != 0):
-                teamOneHealth = sum(healthOne.values())/len(healthOne.values())
-                teamTwoHealth = sum(healthTwo.values())/len(healthTwo.values())
+                teamOneHealth = sum(healthOne.values()) + 100* (6-len(healthOne.values()))
+                teamTwoHealth = sum(healthTwo.values())+ 100* (6-len(healthTwo.values()))
+                
             else: 
-                teamOneHealth = 100
-                teamTwoHealth = 100 
+                teamOneHealth = 600
+                teamTwoHealth = 600 
             
-            team1.append([turn,noOfTeam1Pokemon,noOfFaintedPokemonForTeam1,teamOneHealth])
-            team2.append([turn,noOfTeam2Pokemon,noOfFaintedPokemonForTeam2,teamTwoHealth])
+            team1.append([turn,noOfTeam1Pokemon,noOfFaintedPokemonForTeam1,noofStatsPokemon1,teamOneHealth])
+            team2.append([turn,noOfTeam2Pokemon,noOfFaintedPokemonForTeam2,noofStatsPokemon2,teamTwoHealth])
             turn +=1
             continue
         match = re.match(SWITCH, line)
         if match:
-                
                 nickname = match.group("nickname")
-                pokemon = match.group("pokename").split(",")[0]
+                
+                pokemon = match.group("pokename").split("-")[0].split(",")[0]
+                if(pokemon == ''):
+                    pokemon = match.group("pokename")
+                
                 player = match.group("player")
                 totalHealth = match.group("totalHealth").strip("(").strip(")").strip(" ")
                 remainingHealth = match.group("remainingHealth").strip(")").strip(" ").strip("(")
-                # print(totalHealth)
-                # print(remainingHealth)
+                
                 
                 if(totalHealth == remainingHealth):
                     if("p1" in player):
@@ -124,7 +183,9 @@ def handle_line(lines):
         match = re.match(REPLACE, line) 
         if match:
                 nickname = match.group("nickname")
-                pokemon = match.group("pokename").split(",")[0]
+                pokemon = match.group("pokename").split("-")[0].split(",")[0]
+                if(pokemon == ''):
+                    pokemon = match.group("pokename")
                 player = match.group("player")
       
                 if("p1" in player):
@@ -148,9 +209,11 @@ def handle_line(lines):
                 continue
         match = re.match(SWAP, line) 
         if match:
-                pokemon = match.group("pokename").split(",")[0]
-                player = match.group("player")
                 
+                pokemon = match.group("pokename").split("-")[0].split(",")[0]
+                if(pokemon == ''):
+                    pokemon = match.group("pokename")
+                player = match.group("player")
                 
                 if("p1" in player):
                     healthOne[pokemon] = 100
@@ -172,6 +235,8 @@ def handle_line(lines):
         match = re.match(DAMAGE_ITEM_FAINT, line) 
         if match : 
                 pokemon = match.group("poke")
+                if(pokemon ==''):
+                    pokemon= match.group("poke")
                 nickname = nick_names[pokemon]
                 player = match.group("player")
                 if("p1" in player): 
@@ -186,6 +251,8 @@ def handle_line(lines):
                 match = match = re.match(DAMAGE_ITEM, line) 
                 if(match):
                     pokemon = match.group("poke")
+                    if(pokemon ==''):
+                        pokemon= match.group("poke")
                     remainingHealth = match.group("remainingHealth").strip("(").strip(")").split(" ")
                     totalHealth = match.group("totalHealth").strip("(").strip(")").split(" ")
                     
@@ -197,7 +264,7 @@ def handle_line(lines):
                     totalHealth = re.match(temp,totalHealth[0]).groups()[0]
                      
                     percentageDamage =((int(totalHealth)-int(remainingHealth)) /int(totalHealth)) *100 
-                    pokemon = match.group("poke")
+                    
                     nickname = nick_names[pokemon]
                     player = match.group("player")
                     if("p1" in player): 
@@ -210,6 +277,8 @@ def handle_line(lines):
                         match = match = re.match(DAMAGE_ITEM, line) 
                         if(match):
                             pokemon = match.group("poke")
+                            if(pokemon ==''):
+                                pokemon= match.group("poke")
                             remainingHealth = match.group("remainingHealth").strip("(").strip(")").split(" ")
                             totalHealth = match.group("totalHealth").strip("(").strip(")").split(" ")
                             
@@ -221,7 +290,7 @@ def handle_line(lines):
                             totalHealth = re.match(temp,totalHealth[0]).groups()[0]
                             
                             percentageDamage =((int(totalHealth)-int(remainingHealth)) /int(totalHealth)) *100 
-                            pokemon = match.group("poke")
+                            
                             nickname = nick_names[pokemon]
                             player = match.group("player")
                             if("p1" in player): 
@@ -234,6 +303,8 @@ def handle_line(lines):
                             match = re.match(DAMAGE_FROM_FAINT_MOVE, line) 
                             if(match): 
                                 pokemon = match.group("poke")
+                                if(pokemon ==''):
+                                    pokemon= match.group("poke")
                                 nickname = nick_names[pokemon]
                                 player = match.group("player")
                                 if("p1" in player): 
@@ -248,6 +319,8 @@ def handle_line(lines):
                                 match = re.match(DAMAGE_FAINT, line) 
                                 if match : 
                                     pokemon = match.group("poke")
+                                    if(pokemon ==''):
+                                        pokemon= match.group("poke")
                                     nickname = nick_names[pokemon]
                                     player = match.group("player")
                                     if("p1" in player): 
@@ -261,8 +334,9 @@ def handle_line(lines):
                                         
                                         match = match = re.match(DAMAGE_MOVE, line) 
                                         if(match):
-                                            
                                             pokemon = match.group("poke")
+                                            if(pokemon ==''):
+                                                pokemon= match.group("poke")
                                             remainingHealth = match.group("remainingHealth").strip("(").strip(")").split(" ")
                                             totalHealth = match.group("totalHealth").strip("(").strip(")").split(" ")
                                             
@@ -274,7 +348,7 @@ def handle_line(lines):
                                             totalHealth = re.match(temp,totalHealth[0]).groups()[0]
                                             
                                             percentageDamage =((int(totalHealth)-int(remainingHealth)) /int(totalHealth)) *100 
-                                            pokemon = match.group("poke")
+                                            
                                             nickname = nick_names[pokemon]
                                             player = match.group("player")
                                             if("p1" in player): 
@@ -293,7 +367,6 @@ if __name__ == "__main__":
     index = 0
     for username in names:
         directory = username
-        print("ee")
         healthOne = {}
         healthTwo ={}
         nick_names ={}
@@ -303,32 +376,57 @@ if __name__ == "__main__":
         team2pokemon = []
         user1 = ''
         user2 = ''
+        statsTeam1  = []
+        statsTeam2 =[]
             
         noOfTeam1Pokemon = 0 
         noOfTeam2Pokemon = 0 
             
         noOfFaintedPokemonForTeam1=0 
         noOfFaintedPokemonForTeam2=0
+        noofStatsPokemon1 = 0 
+        noofStatsPokemon2 = 0 
         turn = 1
         ans = []
+        replayid = directory[1]
         for log in directory[2].split("\n"):
             
             index = index+1
             lines = log.split("\n")
             
             handle_line(lines)
-            if(ans != []):
-                with open("turns.csv", "a") as f:
-                    win_team  = ans[0]
-                    lose_team = ans[1]
-                    for i in range(len(win_team)) : 
-                        f.write(str(win_team[i]).strip("[]").replace(" ","")+",0")
-                        f.write("\n")
-                        f.write(str(lose_team[i]).strip("[]").replace(" ","")+",1")
-                        f.write("\n")
-                f.write("\n")
-                f.close()
+            if(ans != [] and ans != None):
+                main_ans = ans
+                break
+        
+        if(main_ans != [] and main_ans != None):
             
+            if(main_ans[0]!="for"):
+                with open("wins.csv", "a") as f1:
+                    win_team  = main_ans[1]
+                    lose_team = main_ans[2]
+                    for i in range(len(win_team)) : 
+                        f1.write(str(win_team[i]).strip("[]").replace(" ","")+",0"+","+replayid)
+                        f1.write("\n")
+                        f1.write(str(lose_team[i]).strip("[]").replace(" ","")+",1"+","+replayid)
+                        f1.write("\n")
+                        
+                    f1.close()
+            else: 
+                with open("forfeited.csv", "a") as f:
+                    win_team  = main_ans[1]
+                    lose_team = main_ans[2]
+                    for i in range(len(win_team)) : 
+                        f.write(str(win_team[i]).strip("[]").replace(" ","")+",0"+","+replayid)
+                        f.write("\n")
+                        f.write(str(lose_team[i]).strip("[]").replace(" ","")+",1"+","+replayid)
+                        f.write("\n")
+
+                        
+                    f.close()
+            
+                    
+                    
 
            
 
