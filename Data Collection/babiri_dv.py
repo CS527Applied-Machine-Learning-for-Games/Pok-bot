@@ -17,11 +17,6 @@ import matplotlib.pyplot as plt
 BABIRI_URL = "https://www.babiri.net/#/"
 REPLAY_URL= "http://replay.pokemonshowdown.com/{replay_id}.log"
 
-def parse_args():
-    argparser = ArgumentParser()
-    argparser.add_argument('db_path')
-    return argparser.parse_args()
-
 def get_teams():
     text = requests.get(BABIRI_URL)
     driver = webdriver.Chrome("/Users/aishwaryamustoori/Downloads/chromedriver")
@@ -45,19 +40,9 @@ def get_teams():
             all_teams.append([team_list,href])
 
     return all_teams
-
-
-def get_logs(replay_id):
-    html = requests.get(REPLAY_URL.format(
-        replay_id=replay_id)
-    ).text
-    return html
-
 if __name__ == "__main__":
-    args = parse_args()
     teams = get_teams() 
     teams_for_data_viz = {}
-    r = ReplayDatabase(args.db_path)
     for team in teams:
         print ("Team: %s" % team)
         replay_id = team[1]
@@ -66,10 +51,51 @@ if __name__ == "__main__":
                 teams_for_data_viz[pokemon] += 1
             else : 
                 teams_for_data_viz[pokemon] = 1
-        if r.check_team_replay_exists(team[1]):
-            print ("Skipped Team: %s" % str(team[0]))
-            continue
-        print ("New replay ID: %s" % replay_id)
-        r.add_team_replay(str(team[0]),replay_id, get_logs(replay_id))
-        r.commit()
+    all_lists = sorted(teams_for_data_viz.items(),key = lambda x :x[1],reverse=True)[:10]
+    
+    x_labels = [x[0] for x in all_lists]
    
+    frequencies =  [x[1] for x in all_lists]
+    freq_series = pd.Series(frequencies)
+
+    
+    plt.figure(figsize=(40, 30))
+    plt.rcParams.update({'font.size': 45})
+    my_cmap = cm.get_cmap('jet')
+    my_norm = Normalize(vmin=0, vmax=41)
+
+    ax = freq_series.plot(kind='bar',color=my_cmap(my_norm(frequencies)))
+    ax.set_title('Usage of Pokemon')
+    ax.set_xlabel('Pokemon')
+    ax.set_ylabel('Usage')
+    ax.set_xticklabels(x_labels,rotation=45, horizontalalignment='right')
+
+
+    
+
+    def add_value_labels(ax, spacing=10):
+
+        for rect in ax.patches:
+            y_value = rect.get_height()
+            x_value = rect.get_x() + rect.get_width() / 2
+
+            space = spacing
+            va = 'bottom'
+
+            if y_value < 0:
+                space *= -1
+                va = 'top'
+            label = "{:.1f}".format(y_value)
+
+            ax.annotate(
+                label,                    
+                (x_value, y_value),       
+                xytext=(0, space),          
+                textcoords="offset points", 
+                ha='center',               
+                va=va)                      
+                                            
+
+    add_value_labels(ax)
+
+    plt.savefig("image.png")

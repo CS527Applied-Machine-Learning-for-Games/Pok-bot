@@ -100,8 +100,8 @@ def handle_line(lines):
                 teamOneHealth = sum(healthOne.values())+ 100 * (6-len(healthOne.values()))
                 teamTwoHealth = sum(healthTwo.values())+ 100 * (6-len(healthTwo.values()))
                 
-                team1.append([turn,noOfTeam1Pokemon,noOfFaintedPokemonForTeam1,noofStatsPokemon1,teamOneHealth])
-                team2.append([turn,noOfTeam2Pokemon,noOfFaintedPokemonForTeam2,noofStatsPokemon2,teamTwoHealth])
+                team1.append([turn,noOfTeam1Pokemon,noOfFaintedPokemonForTeam1,len(statsTeam1),teamOneHealth])
+                team2.append([turn,noOfTeam2Pokemon,noOfFaintedPokemonForTeam2,len(statsTeam2),teamTwoHealth])
                 if("p2" in player):
                     ans = ["for",team1,team2]
                     break
@@ -119,9 +119,9 @@ def handle_line(lines):
                 
                 teamOneHealth = sum(healthOne.values())+ 100* (6-len(healthOne.values()))
                 teamTwoHealth = sum(healthTwo.values())+ 100* (6-len(healthTwo.values()))
-                team1.append([turn,noOfTeam1Pokemon,noOfFaintedPokemonForTeam1,noofStatsPokemon1,teamOneHealth])
-                team2.append([turn,noOfTeam2Pokemon,noOfFaintedPokemonForTeam2,noofStatsPokemon2,teamTwoHealth])
-                
+                team1.append([turn,noOfTeam1Pokemon,noOfFaintedPokemonForTeam1,len(statsTeam1),teamOneHealth])
+                team2.append([turn,noOfTeam2Pokemon,noOfFaintedPokemonForTeam2,len(statsTeam2),teamTwoHealth])
+
                 if("p1" in player):
                     ans = ["win",team1,team2]
                     break
@@ -137,13 +137,13 @@ def handle_line(lines):
             if(len(healthOne) !=0 and len(healthTwo) != 0):
                 teamOneHealth = sum(healthOne.values()) + 100* (6-len(healthOne.values()))
                 teamTwoHealth = sum(healthTwo.values())+ 100* (6-len(healthTwo.values()))
-                
+
             else: 
                 teamOneHealth = 600
                 teamTwoHealth = 600 
             
-            team1.append([turn,noOfTeam1Pokemon,noOfFaintedPokemonForTeam1,noofStatsPokemon1,teamOneHealth])
-            team2.append([turn,noOfTeam2Pokemon,noOfFaintedPokemonForTeam2,noofStatsPokemon2,teamTwoHealth])
+            team1.append([turn,noOfTeam1Pokemon,noOfFaintedPokemonForTeam1,len(statsTeam1),teamOneHealth])
+            team2.append([turn,noOfTeam2Pokemon,noOfFaintedPokemonForTeam2,len(statsTeam2),teamTwoHealth])
             turn +=1
             continue
         match = re.match(SWITCH, line)
@@ -242,9 +242,13 @@ def handle_line(lines):
                 if("p1" in player): 
                     healthOne[nickname] = 0
                     noOfFaintedPokemonForTeam1 +=1
+                    if(nickname in statsTeam1):
+                        statsTeam1.remove(nickname)
                 else : 
                     healthTwo[nickname] = 0 
                     noOfFaintedPokemonForTeam2 +=1
+                    if(nickname in statsTeam2):
+                        statsTeam2.remove(nickname)
                 continue
         else : 
                 
@@ -310,9 +314,13 @@ def handle_line(lines):
                                 if("p1" in player): 
                                     healthOne[nickname] = 0
                                     noOfFaintedPokemonForTeam1 +=1
+                                    if(nickname in statsTeam1):
+                                        statsTeam1.remove(nickname)
                                 else : 
                                     healthTwo[nickname] = 0 
                                     noOfFaintedPokemonForTeam2 +=1
+                                    if(nickname in statsTeam2):
+                                        statsTeam2.remove(nickname)
                                 continue
                             else :
                                 
@@ -326,9 +334,14 @@ def handle_line(lines):
                                     if("p1" in player): 
                                         healthOne[nickname] = 0
                                         noOfFaintedPokemonForTeam1 +=1
+                                        
+                                        if(nickname in statsTeam1):
+                                            statsTeam1.remove(nickname)
                                     else : 
                                         healthTwo[nickname] = 0 
                                         noOfFaintedPokemonForTeam2 +=1
+                                        if(nickname in statsTeam2):
+                                            statsTeam2.remove(nickname)
                                     continue
                                 else : 
                                         
@@ -402,7 +415,7 @@ if __name__ == "__main__":
         if(main_ans != [] and main_ans != None):
             
             if(main_ans[0]!="for"):
-                with open("wins.csv", "a") as f1:
+                with open("completed.csv", "a") as f1:
                     win_team  = main_ans[1]
                     lose_team = main_ans[2]
                     for i in range(len(win_team)) : 
@@ -421,9 +434,16 @@ if __name__ == "__main__":
                         f.write("\n")
                         f.write(str(lose_team[i]).strip("[]").replace(" ","")+",1"+","+replayid)
                         f.write("\n")
+            with open("wins.csv", "a") as f2:
+                    win_team  = main_ans[1]
+                    lose_team = main_ans[2]
+                    for i in range(len(win_team)) : 
+                        f2.write(str(win_team[i]).strip("[]").replace(" ","")+",0"+","+replayid)
+                        f2.write("\n")
+                        f2.write(str(lose_team[i]).strip("[]").replace(" ","")+",1"+","+replayid)
+                        f2.write("\n")
 
-                        
-                    f.close()
+                    f2.close()
             
                     
                     

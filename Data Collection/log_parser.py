@@ -127,10 +127,9 @@ def handle_line(line):
             pokemon = nick_names[pokemon]
         else : 
             nick_names[pokemon] = pokemon
-        if()
         move = match.group("move").split("|")[0]
         from_pokemon = pokemon
-        to_pokemon = nick_names[match.group("poke2").split("|")[0]]
+        to_pokemon = match.group("poke2").split("|")[0]
         if(graph_frequencies.get(pokemon) !=None): 
             if(graph_frequencies[pokemon].get('moves') !=None):
                 if(graph_frequencies[pokemon]['moves'].get(match.group("move"))!=None) : 
@@ -143,16 +142,16 @@ def handle_line(line):
         else : 
             graph_frequencies[pokemon] = {"moves":{match.group("move"):1}}
     
-    match = re.match(SUPER_EFFECTIVE, line)    
-    if(match) : 
-        pokemon = match.group("poke").split("-")[0]
-        if(to_pokemon == nick_names[pokemon]) : 
-            if(supereffective.get(nick_names[from_pokemon]) != None) : 
-                supereffective[nick_names[from_pokemon]].update({"move":move,"toPokemon" : pokemon})
-            else : 
-                supereffective[nick_names[from_pokemon]] = { 
-                    "move":move,"toPokemon" : pokemon
-                }
+    # match = re.match(SUPER_EFFECTIVE, line)    
+    # if(match) : 
+    #     pokemon = match.group("poke").split("-")[0]
+    #     if(to_pokemon == nick_names[pokemon]) : 
+    #         if(supereffective.get(nick_names[from_pokemon]) != None) : 
+    #             supereffective[nick_names[from_pokemon]].update({"move":move,"fromPokemon" : pokemon})
+    #         else : 
+    #             supereffective[nick_names[from_pokemon]] = { 
+    #                 "move":move,"fromPokemon" : pokemon
+    #             }
 
     match = re.match(DAMAGE_ITEM_FAINT, line) 
     if match : 
@@ -239,11 +238,11 @@ def handle_line(line):
                                 percentageDamage= 0 
                                 if(graph_frequencies.get(nick_names[pokemon]) !=None): 
                                     if(graph_frequencies[nick_names[pokemon]].get('damage') !=None):
-                                        graph_frequencies[nick_names[pokemon]]['damage']  =graph_frequencies[nick_names[pokemon]]['damage']  + [{"move":move,"toPokemon":to_pokemon,"damagePercent":"faint"}]
+                                        graph_frequencies[nick_names[pokemon]]['damage']  =graph_frequencies[nick_names[pokemon]]['damage']  + [{"move":move,"fromPokemon":from_pokemon,"damagePercent":"faint"}]
                                     else:
-                                        graph_frequencies[nick_names[pokemon]]['damage']= [{"move":move,"toPokemon":to_pokemon,"damagePercent":"faint"}]
+                                        graph_frequencies[nick_names[pokemon]]['damage']= [{"move":move,"fromPokemon":from_pokemon,"damagePercent":"faint"}]
                                 else:
-                                    graph_frequencies[nick_names[pokemon]]={"damage":[{"move":move,"toPokemon":to_pokemon,"damagePercent":"faint"}]}
+                                    graph_frequencies[nick_names[pokemon]]={"damage":[{"move":move,"fromPokemon":from_pokemon,"damagePercent":"faint"}]}
                                 if(to_pokemon == pokemon):
                                     move = ""
                                 faint = True
@@ -269,11 +268,11 @@ def handle_line(line):
                                         percentageDamage =((int(strip)-int(remainingHealth)) /int(totalHealth)) *100 
                                         if(graph_frequencies.get(nick_names[pokemon]) !=None): 
                                             if(graph_frequencies[nick_names[pokemon]].get('damage') !=None):
-                                                graph_frequencies[nick_names[pokemon]]['damage'].append({"move":move,"toPokemon":to_pokemon,"damagePercent":percentageDamage})
+                                                graph_frequencies[nick_names[pokemon]]['damage'].append({"move":move,"fromPokemon":from_pokemon,"damagePercent":percentageDamage})
                                             else:
-                                                graph_frequencies[nick_names[pokemon]]['damage']= [{"move":move,"toPokemon":to_pokemon,"damagePercent":percentageDamage}]
+                                                graph_frequencies[nick_names[pokemon]]['damage']= [{"move":move,"fromPokemon":from_pokemon,"damagePercent":percentageDamage}]
                                         else:
-                                            graph_frequencies[nick_names[pokemon]]={"damage":[{"move":move,"toPokemon":to_pokemon,"damagePercent":percentageDamage}]}
+                                            graph_frequencies[nick_names[pokemon]]={"damage":[{"move":move,"fromPokemon":from_pokemon,"damagePercent":percentageDamage}]}
                                         if(to_pokemon == pokemon):
                                             move = ""
 
@@ -284,7 +283,7 @@ if __name__ == "__main__":
     r = ReplayDatabase(sys.argv[0])
     names = r.select_all_replays()
     index = 0
-    for username in names:
+    for username in names[:2]:
         directory = username
         current_pokemon=''
         move = ''

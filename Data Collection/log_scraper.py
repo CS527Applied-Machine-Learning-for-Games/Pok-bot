@@ -6,18 +6,13 @@ from database import ReplayDatabase
 # Taken from https://github.com/vasumv/pokemon_ai/tree/master/log_scraper
 
 
-LADDER_URL = "http://pokemonshowdown.com/ladder/gen8randombattle"
+LADDER_URL = "https://pokemonshowdown.com/ladder/gen8ou"
 USERNAME_URL = "http://replay.pokemonshowdown.com/search/?output=html&user={user}&format=&page={page}&output=html"
 REPLAY_URL= "http://replay.pokemonshowdown.com/{replay_id}.log"
 
-def parse_args():
-    argparser = ArgumentParser()
-    argparser.add_argument('db_path')
-    argparser.add_argument('--start_index', default=0, type=int)
-    argparser.add_argument('--end_index', default=499, type=int)
-    argparser.add_argument('--max_page', default=100, type=int)
+#https://pokemonshowdown.com/ladder/gen8ou - OU Battles
+# http://pokemonshowdown.com/ladder/gen8randombattle - Random
 
-    return argparser.parse_args()
 
 def get_usernames():
     text = requests.get(LADDER_URL).text
@@ -53,14 +48,16 @@ def get_logs(replay_id):
     return html
 
 if __name__ == "__main__":
-    args = parse_args()
+    
     usernames = get_usernames() 
-    r = ReplayDatabase(args.db_path)
-    for user in usernames[args.start_index:args.end_index]:
+    r = ReplayDatabase("")
+    for user in usernames[0:100]:
         print ("User: %s" % user)
-        for i in range(1, args.max_page + 1):
+        for i in range(1, 101):
             print( "Page: %d" % i)
             replay_ids = get_replay_ids(user, i)
+            if(len(replay_ids) ==0):
+                break
             if page_done(r, replay_ids):
                 print ("Skipped page: %d" % i)
                 continue

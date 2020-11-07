@@ -13,13 +13,12 @@ class ReplayDatabase(object):
 
     def __init__(self, db_path):
         self.db_path = db_path
-        self.conn = sqlite3.connect(self.db_path)
+        self.conn = sqlite3.connect("/Users/aishwaryamustoori/sqlite/test.db")
         try:
             c = self.conn.cursor()
             c.execute("CREATE TABLE replay (_id INTEGER PRIMARY KEY AUTOINCREMENT, replay_id TEXT NOT NULL UNIQUE, battle_log TEXT)")
             c.execute("CREATE TABLE team_replays (_id INTEGER PRIMARY KEY AUTOINCREMENT,team TEXT NOT NULL, replay_id TEXT NOT NULL UNIQUE, battle_log TEXT)")
         except :
-            print("whyy")
             pass
 
     def check_replay_exists(self, replay_id):
@@ -31,6 +30,10 @@ class ReplayDatabase(object):
         c = self.conn.cursor()
         replay = c.execute("SELECT battle_log FROM replay WHERE replay_id=?", [replay_id]).fetchone()
         return replay[0]
+    def select_all_replays(self):
+        c = self.conn.cursor()
+        replay = c.execute("SELECT * FROM replay").fetchall()
+        return replay
 
     def add_replay(self, replay_id, battle_log):
         c = self.conn.cursor()
