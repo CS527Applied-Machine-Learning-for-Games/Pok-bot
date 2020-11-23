@@ -32,6 +32,7 @@
 	<meta name="msapplication-config" content="https://getbootstrap.com/docs/4.4/assets/img/favicons/browserconfig.xml">
 	<meta name="theme-color" content="#563d7c">
 	<style>
+
 		.bd-placeholder-img {
 		  font-size: 1.125rem;
 		  text-anchor: middle;
@@ -46,6 +47,19 @@
 		    font-size: 3.5rem;
 		  }
 		}
+		.parallax {
+  /* The image used */
+  background-image: url("images/background.jpg");
+
+  /* Set a specific height */
+  min-height: 500px;
+
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
 	</style>
 	<!-- Custom styles for this template -->
 	<link href="https://getbootstrap.com/docs/4.4/examples/carousel/carousel.css" rel="stylesheet">
@@ -60,10 +74,6 @@
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item active">
 						<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#Introduction">Introduction</a>
-
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="#Team">Team</a>
@@ -97,43 +107,46 @@
   ================================================== -->
   <!-- Wrap the rest of the page in another container to center all the content. -->
 
-		<div class="row text-center" style="background-color:rgb(52,58,64);height:500px;">
+		<div class="row text-center" >
 			<div class="col">
-				<p>
-					PokéBot
-				<img src="images/background.jpg" alt="Girl in a jacket">
-				</p>
+				<div class="parallax" id="Introduction" >
+					<div class="col" style="color:#000000">
+					</br>
+					</br>
+					<h1 style="color:#000000">PokéBot</h1>
+					<h5>
+				</br>
+				</br>
+			</br>
+			</br>
+					 Pokémon Showdown is an Online Pokémon battle simulator with over 20,000 active daily users.
+	                 </br>
+					 <b>Goal:</b>To Build PokéBot Agent which chooses best optimal move each turn given the current state of the battle.
+					 </br>
+					 </h5>
+					 </br>
+					</br>
+					    <img src="images/showdown.gif" alt="pokemon showdown gif" />
+					<center>Pokemon Showdown Gameplay</center>
+					</div>
+				</div>
 
 			</div >
 		</div><!-- /.row -->
-
-		<div class="container marketing" id="Introduction">>
+		<div class="container marketing" id="Introduction" >
 
 		<!-- Three columns of text below the carousel -->
 			<!--<div class="row text-center" style="background-color:rgb(188,129,77);">
 	   		-->
-			<div class="row text-center" style="margin-top:30px" id="Introduction" >
-				<div class="col">
-				<h1 style="color:#000000">Introduction</h1>
-				<h5>
-				</br>
-				</br>
-				 Pokémon Showdown is an Online Pokémon battle simulator with over 20,000 active daily users.
-                 </br>
-				 <b>Goal:</b>To Build PokéBot Agent which chooses best optimal move each turn given the current state of the battle.
-				 </br>
-				 </h5>
-				 </br>
-				</br>
-				    <img src="images/showdown.gif" alt="pokemon showdown gif" /> 
-				<center>Pokemon Showdown Gameplay</center>
-				</div>
-			</div>
+
 
 			<hr class="featurette-divider">
 			<div class="row text-center" id="Team">
 				<h2><center>Meet our team members!<center></h2>
+
 			</div>
+		</br>
+	</br>
 			<div class="row">
 				<div class="col-lg-4">
 					<img class="rounded-circle" src="images/abhilash.jpg" alt="Generic placeholder image" width="140" height="140">
@@ -179,7 +192,7 @@
 
 				</div><!-- /.col-lg-4 -->
 			</div><!-- /.row -->
-			
+
 			<div class="row">
 				<div class="col-lg-4">
 					<img class="rounded-circle" src="images/ruicheng.jpg" alt="Generic placeholder image" width="140" height="140">
@@ -194,7 +207,7 @@
 					</p>
 					<p><a class="btn btn-secondary" href="https://www.linkedin.com/in/ruoyu-chen-a5ba82169/" role="button">View details »</a></p>
 				</div><!-- /.col-lg-4 -->
-				
+
 			</div><!-- /.row -->
 
 
@@ -205,7 +218,7 @@
 			<div class="row featurette" id="Tools">
 				<div class="col-md-5">
 					<h4 class="featurette-heading">Methodology </h4>
-					
+
 					<ul>
 						<li>Data Collection</li>
 						<li>Data Parsing</li>
@@ -256,9 +269,9 @@
 			<hr class="featurette-divider">
 			<div class="row featurette" id="Paper">
 				<div class="col-md-6">
-					<h3 class="featurette-heading">Come checkout our paper here. 
+					<h3 class="featurette-heading">Come checkout our paper here.
 						<span class="text-muted">
-							<a href="https://drive.google.com/file/d/1o77GZsQrVsZKSAJuemfj7Ki3HEAuwF9i/view?usp=sharing" target="_blank">Click me. 
+							<a href="https://drive.google.com/file/d/1o77GZsQrVsZKSAJuemfj7Ki3HEAuwF9i/view?usp=sharing" target="_blank">Click me.
 							</a>
 						</span>
 						<div class="text-muted">And our Slides
@@ -269,11 +282,9 @@
 
 
 					<h3 class="featurette-heading">
-				
+
 				</div>
-				<div class="col-md-6">
-					<img  class="" src="images/teamgif.gif" alt="Generic placeholder image"  height="350" width="650">
-				</div>
+
 			</div>
 
 
