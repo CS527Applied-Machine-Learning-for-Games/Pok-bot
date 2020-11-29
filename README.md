@@ -22,3 +22,8 @@ The goals of this project include:
 3. To predict the winning percentage after each move
 
 
+## References:
+
+1.  Poke-env github: https://github.com/hsahovic/poke-env
+2.  Pokémon Showdown:  https://Pokémonshowdown.com/
+
