@@ -13,7 +13,7 @@ class ReplayDatabase(object):
 
     def __init__(self, db_path):
         self.db_path = db_path
-        self.conn = sqlite3.connect("/Users/aishwaryamustoori/sqlite/test.db")
+        self.conn = sqlite3.connect("database_for_scrapping.db")
         try:
             c = self.conn.cursor()
             c.execute("CREATE TABLE replay (_id INTEGER PRIMARY KEY AUTOINCREMENT, replay_id TEXT NOT NULL UNIQUE, battle_log TEXT)")

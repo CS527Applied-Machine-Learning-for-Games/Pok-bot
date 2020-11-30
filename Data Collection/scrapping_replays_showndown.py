@@ -24,7 +24,7 @@ def page_done(database, replay_ids):
     if(len(replay_ids)!= 0):
         first, last = replay_ids[0], replay_ids[-1]
         return database.check_replay_exists(first) and database.check_replay_exists(last)
-    else : 
+    else :
         return []
 
 
@@ -49,7 +49,7 @@ def get_logs(replay_id):
 
 if __name__ == "__main__":
     
-    usernames = get_usernames() 
+    usernames = get_usernames()
     r = ReplayDatabase("")
     for user in usernames[0:100]:
         print ("User: %s" % user)
@@ -66,3 +66,4 @@ if __name__ == "__main__":
                     print ("New replay ID: %s" % replay_id)
                     r.add_replay(replay_id, get_logs(replay_id))
             r.commit()
+

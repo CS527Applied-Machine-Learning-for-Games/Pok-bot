@@ -19,7 +19,7 @@ REPLAY_URL= "http://replay.pokemonshowdown.com/{replay_id}.log"
 
 def get_teams():
     text = requests.get(BABIRI_URL)
-    driver = webdriver.Chrome("/Users/aishwaryamustoori/Downloads/chromedriver")
+    driver = webdriver.Chrome("chromedriver")
     driver.get(BABIRI_URL)
     time.sleep(2)
     html = driver.page_source

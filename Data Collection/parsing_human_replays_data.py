@@ -6,16 +6,16 @@ from database import ReplayDatabase
 from collections import defaultdict
 POKE = r"\|poke\|(?P<player>.+?)\|(?P<poke>.+?)\|"
 
-SWITCH = r"\|(switch|drag)\|(?P<player>.+?)(a|b): (?P<nickname>.+?)\|(?P<pokename>.+)\|(?P<remainingHealth>.+)/(?P<totalHealth>.+)"
-REPLACE = r"\|replace\|(?P<player>.+?)(a|b): (?P<nickname>.+?)\|(?P<pokename>.+?).+?"
-MOVE = r"\|move\|(?P<player1>.+?)(a|b): (?P<poke1>.+?)\|(?P<move>.+?)\|(\[of\] )*(?P<player2>.+?)(a|b): (?P<poke2>.+)"
-DAMAGE_MOVE = r"\|-damage\|(?P<player>.+?)(a|b): (?P<poke>.+?)\|(?P<remainingHealth>.+?)/(?P<totalHealth>.+)"
-DAMAGE_FROM_FAINT_MOVE = r"\|-damage\|(?P<player>.+?)(a|b): (?P<poke>.+?)\|0 fnt\|\[from\] (?P<move>.+)"
-DAMAGE_FROM_MOVE =  r"\|-damage\|(?P<player>.+?)(a|b): (?P<poke>.+?)\|(?P<remainingHealth>.+?)/(?P<totalHealth>.+?)\|\[from\] (?P<move>.+)"
-DAMAGE_FAINT = r"\|-damage\|(?P<player>.+?)(a|b): (?P<poke>.+?)\|0 fnt"
-DAMAGE_ITEM = r"\|-damage\|(?P<player>.+?)(a|b): (?P<poke>.+?)\|(?P<remainingHealth>.+?)/(?P<totalHealth>.+?)\|\[from\] item: (?P<item>.+)"
-DAMAGE_ITEM_FAINT = r"\|-damage\|(?P<player>.+?)(a|b): (?P<poke>.+?)\|0 fnt\|\[from\] item :(?P<item>.+)"
-SUPER_EFFECTIVE =  r"\|-supereffective\|(?P<player>.+?)(a|b): (?P<poke>.+)"
+SWITCH = r"\|(switch|drag)\|(?P<player>.+?)(a|b|c): (?P<nickname>.+?)\|(?P<pokename>.+)\|(?P<remainingHealth>.+)/(?P<totalHealth>.+)"
+REPLACE = r"\|replace\|(?P<player>.+?)(a|b|c): (?P<nickname>.+?)\|(?P<pokename>.+?).+?"
+MOVE = r"\|(move|-prepare|-anim)\|(?P<player1>.+?)(a|b|c): (?P<poke1>.+?)\|(?P<move>.+?)\|(\[of\] )*(?P<player2>.+?)(a|b|c): (?P<poke2>.+)"
+DAMAGE_MOVE = r"\|-damage\|(?P<player>.+?)(a|b|c): (?P<poke>.+?)\|(?P<remainingHealth>.+?)/(?P<totalHealth>.+)"
+DAMAGE_FROM_FAINT_MOVE = r"\|-damage\|(?P<player>.+?)(a|b|c): (?P<poke>.+?)\|0 fnt\|\[from\] (?P<move>.+)"
+DAMAGE_FROM_MOVE =  r"\|-damage\|(?P<player>.+?)(a|b|c): (?P<poke>.+?)\|(?P<remainingHealth>.+?)/(?P<totalHealth>.+?)\|\[from\] (?P<move>.+)"
+DAMAGE_FAINT = r"\|-damage\|(?P<player>.+?)(a|b|c): (?P<poke>.+?)\|0 fnt"
+DAMAGE_ITEM = r"\|-damage\|(?P<player>.+?)(a|b|c): (?P<poke>.+?)\|(?P<remainingHealth>.+?)/(?P<totalHealth>.+?)\|\[from\] item: (?P<item>.+)"
+DAMAGE_ITEM_FAINT = r"\|-damage\|(?P<player>.+?)(a|b|c): (?P<poke>.+?)\|0 fnt\|\[from\] item :(?P<item>.+)"
+SUPER_EFFECTIVE =  r"\|-supereffective\|(?P<player>.+?)(a|b|c): (?P<poke>.+)"
 
 HEALTH =r"([a-zA-Z]+)(?P<health>[0-9]+).+?"
 pokemon_health ={}
@@ -27,7 +27,7 @@ faint  = False
 opponent_current_pokemon=''
 graph_frequencies = {}
 supereffective = {}
-nick_names=defaultdict(str)
+nick_names= {}
 total_health={}
 def handle_line(line):
     match = re.match(POKE, line)
@@ -37,22 +37,27 @@ def handle_line(line):
     global to_pokemon
     global move
     global faint
+    
     if match:
         # Storing frequency of pokemon
         pokemon = match.group("poke").split(",")[0].split("-")[0]
         team[pokemon] +=1
         # graph_frequencies[pokemon] = dict()
         pokemon_health[pokemon]=0
+   
     match = re.match(SWITCH, line)
     if match:
+           
+            nickname = match.group("nickname")
+            pokemon = match.group("pokename").split(",")[0]
             
-            nickname = match.group("nickname").split("-")[0]
-            pokemon = match.group("pokename").split("-")[0].split(",")[0]
-            
-            if(nickname != ''):
+            if(nickname != '' and pokemon !=""):
                 nick_names[nickname] = pokemon
+            elif(nickname != ''):
+                nick_names[nickname] = nickname
             else :
                 nick_names[pokemon] = pokemon
+
         
             main = match.group("remainingHealth").strip("(")
             pokemon_health[pokemon] = main
@@ -87,11 +92,15 @@ def handle_line(line):
     match = re.match(REPLACE, line)
     if match:
             nickname = match.group("nickname")
-            pokemon = match.group("pokename").split(",")[0].split("-")[0]
-            if(nickname != ''):
+            pokemon = match.group("pokename").split(",")[0]
+            
+            if(nickname != '' and pokemon !=""):
                 nick_names[nickname] = pokemon
+            elif(nickname != ''):
+                nick_names[nickname] = nickname
             else :
                 nick_names[pokemon] = pokemon
+
             if(not faint ):
                 faint = False
                 if (match.group("player") == "p1"  and current_pokemon=='') :
@@ -122,29 +131,33 @@ def handle_line(line):
 
     match = re.match(MOVE, line)
     if match:
-        pokemon=match.group("poke1").split("-")[0]
-        if(nick_names[pokemon]!= None):
-            pokemon = nick_names[pokemon]
-        else :
-            nick_names[pokemon] = pokemon
+        pokemon=match.group("poke1")
+        
+        # if(nick_names[pokemon]!= None):
+        #     pokemon = nick_names[pokemon]
+        # else :
+        # nick_names[pokemon] = pokemon
         move = match.group("move").split("|")[0]
         from_pokemon = pokemon
-        to_pokemon = match.group("poke2").split("-")[0].split("|")[0]
-        if(graph_frequencies.get(pokemon) !=None):
-            if(graph_frequencies[pokemon].get('moves') !=None):
-                if(graph_frequencies[pokemon]['moves'].get(match.group("move"))!=None) :
-                    graph_frequencies[pokemon]['moves'][match.group("move")] = graph_frequencies[pokemon]['moves'][match.group("move")]+1
+        to_pokemon = match.group("poke2").split("|")[0]
+        
+        
+        # nick_names[to_pokemon] = to_pokemon
+        if(graph_frequencies.get(nick_names[pokemon]) !=None):
+            if(graph_frequencies[nick_names[pokemon]].get('moves') !=None):
+                if(graph_frequencies[nick_names[pokemon]]['moves'].get(match.group("move"))!=None) :
+                    graph_frequencies[nick_names[pokemon]]['moves'][match.group("move")] = graph_frequencies[nick_names[pokemon]]['moves'][match.group("move")]+1
                 else :
-                    graph_frequencies[pokemon]['moves'][match.group("move")] = 1
+                    graph_frequencies[nick_names[pokemon]]['moves'][match.group("move")] = 1
             else  :
-                graph_frequencies[pokemon].update({"moves":{
+                graph_frequencies[nick_names[pokemon]].update({"moves":{
                     match.group("move") : 1}})
         else :
-            graph_frequencies[pokemon] = {"moves":{match.group("move"):1}}
+            graph_frequencies[nick_names[pokemon]] = {"moves":{match.group("move"):1}}
     
     match = re.match(SUPER_EFFECTIVE, line)
     if(match) :
-        pokemon = match.group("poke").split("-")[0]
+        pokemon = match.group("poke")
         
         if(to_pokemon == nick_names[pokemon]) :
             if(supereffective.get(nick_names[from_pokemon]) != None) :
@@ -156,8 +169,9 @@ def handle_line(line):
 
     match = re.match(DAMAGE_ITEM_FAINT, line)
     if match :
-            pokemon = match.group("poke").split("-")[0]
+            pokemon = match.group("poke")
             item = match.group("item")
+           
             if(graph_frequencies.get(nick_names[pokemon]) !=None):
                 if(graph_frequencies[nick_names[pokemon]].get('damage') !=None):
                     graph_frequencies[nick_names[pokemon]]['damage']  =graph_frequencies[nick_names[pokemon]]['damage']  + [{"item":item,"damagePercent":"faint"}]
@@ -169,7 +183,7 @@ def handle_line(line):
     else :
             match = match = re.match(DAMAGE_ITEM, line)
             if(match):
-                pokemon = match.group("poke").split("-")[0]
+                pokemon = match.group("poke")
                 remainingHealth = match.group("remainingHealth").strip("(").strip(")").split(" ")
                 totalHealth = match.group("totalHealth").strip("(").strip(")").split(" ")
                 item = match.group("item").split("|")[0]
@@ -195,7 +209,7 @@ def handle_line(line):
             else :
                     match = re.match(DAMAGE_FROM_MOVE, line)
                     if match :
-                        pokemon = match.group("poke").split("-")[0]
+                        pokemon = match.group("poke")
                         move1 = match.group("move").split("|")[0]
                         remainingHealth = match.group("remainingHealth").strip("(").strip(")").split(" ")
                         totalHealth = match.group("totalHealth").strip("(").strip(")").split(" ")
@@ -222,7 +236,7 @@ def handle_line(line):
                     else :
                         match = re.match(DAMAGE_FROM_FAINT_MOVE, line)
                         if(match):
-                            pokemon = match.group("poke").split("-")[0]
+                            pokemon = match.group("poke")
                             move1 = match.group("move").split("|")[0]
                             if(graph_frequencies.get(nick_names[pokemon]) !=None):
                                 if(graph_frequencies[nick_names[pokemon]].get('damage') !=None):
@@ -235,22 +249,23 @@ def handle_line(line):
                         else :
                             match = re.match(DAMAGE_FAINT, line)
                             if match :
-                                pokemon = match.group("poke").split("-")[0]
+                                pokemon = match.group("poke")
                                 percentageDamage= 0
-                                if(graph_frequencies.get(nick_names[pokemon]) !=None):
-                                    if(graph_frequencies[nick_names[pokemon]].get('damage') !=None):
-                                        graph_frequencies[nick_names[pokemon]]['damage']  =graph_frequencies[nick_names[pokemon]]['damage']  + [{"move":move,"fromPokemon":from_pokemon,"damagePercent":"faint"}]
+
+                                if(graph_frequencies.get(nick_names[to_pokemon]) !=None):
+                                    if(graph_frequencies[nick_names[to_pokemon]].get('damage') !=None):
+                                        graph_frequencies[nick_names[to_pokemon]]['damage']  = graph_frequencies[nick_names[to_pokemon]]['damage']  + [{"move":move,"fromPokemon":from_pokemon,"damagePercent":"faint"}]
                                     else:
-                                        graph_frequencies[nick_names[pokemon]]['damage']= [{"move":move,"fromPokemon":from_pokemon,"damagePercent":"faint"}]
+                                        graph_frequencies[nick_names[to_pokemon]]['damage']= [{"move":move,"fromPokemon":from_pokemon,"damagePercent":"faint"}]
                                 else:
-                                    graph_frequencies[nick_names[pokemon]]={"damage":[{"move":move,"fromPokemon":from_pokemon,"damagePercent":"faint"}]}
+                                    graph_frequencies[nick_names[to_pokemon]]={"damage":[{"move":move,"fromPokemon":from_pokemon,"damagePercent":"faint"}]}
                                 if(to_pokemon == pokemon):
                                     move = ""
                                 faint = True
                             else :
                                     match = match = re.match(DAMAGE_MOVE, line)
                                     if(match):
-                                        pokemon = match.group("poke").split("-")[0]
+                                        pokemon = match.group("poke")
                                         remainingHealth = match.group("remainingHealth").strip("(").strip(")").split(" ")
                                         totalHealth = match.group("totalHealth").strip("(").strip(")").split(" ")
                                         
@@ -266,14 +281,19 @@ def handle_line(line):
                                             strip = str(pokemon_health[nick_names[pokemon]]).strip(" ").strip("(").strip(")")
                                         else :
                                             strip = totalHealth
+                                        # if(nick_names[to_pokemon] ==""):
+                                            # print(to_pokemon)
+                                            # print(pokemon)
+                                            # print(nick_names[pokemon])
+
                                         percentageDamage =((int(strip)-int(remainingHealth)) /int(totalHealth)) *100
-                                        if(graph_frequencies.get(nick_names[pokemon]) !=None):
-                                            if(graph_frequencies[nick_names[pokemon]].get('damage') !=None):
-                                                graph_frequencies[nick_names[pokemon]]['damage'].append({"move":move,"fromPokemon":from_pokemon,"damagePercent":percentageDamage})
+                                        if(graph_frequencies.get(nick_names[to_pokemon]) !=None):
+                                            if(graph_frequencies[nick_names[to_pokemon]].get('damage') !=None):
+                                                graph_frequencies[nick_names[to_pokemon]]['damage'].append({"move":move,"fromPokemon":from_pokemon,"damagePercent":percentageDamage})
                                             else:
-                                                graph_frequencies[nick_names[pokemon]]['damage']= [{"move":move,"fromPokemon":from_pokemon,"damagePercent":percentageDamage}]
+                                                graph_frequencies[nick_names[to_pokemon]]['damage']= [{"move":move,"fromPokemon":from_pokemon,"damagePercent":percentageDamage}]
                                         else:
-                                            graph_frequencies[nick_names[pokemon]]={"damage":[{"move":move,"fromPokemon":from_pokemon,"damagePercent":percentageDamage}]}
+                                            graph_frequencies[nick_names[to_pokemon]]={"damage":[{"move":move,"fromPokemon":from_pokemon,"damagePercent":percentageDamage}]}
                                         if(to_pokemon == pokemon):
                                             move = ""
 
@@ -299,12 +319,12 @@ if __name__ == "__main__":
             lines = log.split("\n")
             for line in lines:
                 handle_line(line)
-        
+   
     poke_graph = {
         'Replay Data': graph_frequencies,
         'Team Frequences': team,
         'Super Effective Moves':supereffective
     }
-    with open("ans.json", "w") as f:
+    with open("human_replays_data.json", "w") as f:
         f.write(json.dumps(poke_graph, sort_keys=True,indent=4, separators=(',', ': ')))
 
