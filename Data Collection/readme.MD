@@ -19,7 +19,7 @@ This would help us in forming the Pokémon teams if required.
  
  Logic for accessing SQL Lite database - database.py
  
- database : database_for_scrapping.db 
+ SQL Lite Database : database_for_scrapping.db 
  
  sample_parsing_data.json - Sample JSON after parsing for Human Replays Data
  
