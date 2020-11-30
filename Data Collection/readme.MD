@@ -8,11 +8,19 @@ This would help us in forming the Pokémon teams if required.
  ## Files in Data Collection
  
  Scraping for Babiri Website - babiri_parser.py
+ 
  Scraping for Pokémon Showdown Replays Website - log_scrapper.py
+ 
  Parsing logic for Human Replays Data - log_parser.py
+ 
  Parsing Logic for Winning Prediction - log_parse.py 
+ 
  CSV files used for winning prediction - wins.csv, completed.csv, forfeited.csv
+ 
  database : database_for_scrapping.db 
+ 
+ sample_parsing_data.json - Sample JSON after parsing for Human Replays Data
+ 
  
  Basic Scrapping idea taken from https://github.com/vasumv/pokemon_ai/tree/master/log_scraper 
  Scrapped data from top 500 players for ou and genrandom8 battles 
