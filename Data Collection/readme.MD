@@ -15,13 +15,18 @@ This would help us in forming the Pokémon teams if required.
  
  Parsing Logic for Winning Prediction - parsing_winning_prediction.py
  
- CSV files used for winning prediction - wins.csv, completed.csv, forfeited.csv
- 
  The logic for accessing SQL Lite database - database.py
+  
+ Sample JSON after parsing for Human Replays Data - sample_parsing_data.json
+ 
+ Google drive link for data files: https://drive.google.com/drive/folders/1tu7qDDw8NLILY4DnVYujWGTD0fcOlu4a?usp=sharing
+  
+ CSV files used for winning prediction - wins.csv, completed.csv, forfeited.csv
  
  SQL Lite Database : database_for_scrapping.db 
  
- Sample JSON after parsing for Human Replays Data - sample_parsing_data.json
+ JSON after parsing for Human Replays Data - human_replays_data.json
+
  
  
  Basic Scrapping idea was taken from https://github.com/vasumv/pokemon_ai/tree/master/log_scraper 
