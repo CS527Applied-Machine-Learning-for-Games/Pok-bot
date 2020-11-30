@@ -1,4 +1,4 @@
-## Winning Predictor Model : 
+## Winning Predictor Model
 
 To supplement our Deep Q-Learning Agent while battling, the strength of each side during a battle can be evaluated using the winning percentage at a point in time. We utilized the data we scraped from thousands of replays to create data consisting of features we deemed as important in determining which player would win.
 
