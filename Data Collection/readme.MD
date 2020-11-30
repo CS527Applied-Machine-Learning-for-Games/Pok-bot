@@ -17,6 +17,8 @@ This would help us in forming the Pokémon teams if required.
  
  CSV files used for winning prediction - wins.csv, completed.csv, forfeited.csv
  
+ Logic for accessing SQL Lite database - database.py
+ 
  database : database_for_scrapping.db 
  
  sample_parsing_data.json - Sample JSON after parsing for Human Replays Data
