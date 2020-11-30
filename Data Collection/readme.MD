@@ -35,7 +35,9 @@ This would help us in forming the Pokémon teams if required.
  
  ## Running the Scrapping Script
  
- To run the script python scrapping_replays_showndown.py with db_path as an argument
- Eg : python3 scrapping_replays_showndown.py  db_path: database_for_scrapping.db
+ To run the script python scrapping_replays_showndown.py with db_path as an argument.
+ Eg : 
+ ``` python3 scrapping_replays_showndown.py  db_path: database_for_scrapping.db ```
+
  
  
