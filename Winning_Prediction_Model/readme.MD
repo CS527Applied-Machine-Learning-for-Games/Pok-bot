@@ -6,16 +6,16 @@ The file completed.csv from this google drive link - https://drive.google.com/dr
 
 The classifiers used for prediction are : 
 
-Dummy Classifier 
+1. Dummy Classifier 
 
-Logistic Regression
+2. Logistic Regression
 
-Naive Bayes Classifier
+3. Naive Bayes Classifier
 
-XGB Classifier
+4. XGB Classifier
 
-Neural Network
+5. Neural Network
 
-Decision Tree 
+6. Decision Tree 
 
-Random Forest Classifier
+7. Random Forest Classifier
