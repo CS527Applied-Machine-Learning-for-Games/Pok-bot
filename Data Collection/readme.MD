@@ -11,7 +11,7 @@ This would help us in forming the Pokémon teams if required.
  
  Scraping for Pokémon Showdown Replays Website - scrapping_replays_showndown.py
  
- Parsing logic for Human Replays Data - parsing_human_replays.py
+ Parsing logic for Human Replays Data - parsing_human_replays_data.py
  
  Parsing Logic for Winning Prediction - parsing_winning_prediction.py
  
