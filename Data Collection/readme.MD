@@ -9,11 +9,11 @@ This would help us in forming the Pokémon teams if required.
  
  Scraping for Babiri Website - babiri_parser.py
  
- Scraping for Pokémon Showdown Replays Website - log_scrapper.py
+ Scraping for Pokémon Showdown Replays Website - scrapping_replays_showndown.py
  
- Parsing logic for Human Replays Data - log_parser.py
+ Parsing logic for Human Replays Data - parsing_human_replays.py
  
- Parsing Logic for Winning Prediction - log_parse.py 
+ Parsing Logic for Winning Prediction - parsing_winning_prediction.py
  
  CSV files used for winning prediction - wins.csv, completed.csv, forfeited.csv
  
@@ -21,7 +21,7 @@ This would help us in forming the Pokémon teams if required.
  
  SQL Lite Database : database_for_scrapping.db 
  
- sample_parsing_data.json - Sample JSON after parsing for Human Replays Data
+ Sample JSON after parsing for Human Replays Data - sample_parsing_data.json
  
  
  Basic Scrapping idea taken from https://github.com/vasumv/pokemon_ai/tree/master/log_scraper 
