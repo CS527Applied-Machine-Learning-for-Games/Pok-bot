@@ -17,20 +17,20 @@ This would help us in forming the Pokémon teams if required.
  
  CSV files used for winning prediction - wins.csv, completed.csv, forfeited.csv
  
- Logic for accessing SQL Lite database - database.py
+ The logic for accessing SQL Lite database - database.py
  
  SQL Lite Database : database_for_scrapping.db 
  
  Sample JSON after parsing for Human Replays Data - sample_parsing_data.json
  
  
- Basic Scrapping idea taken from https://github.com/vasumv/pokemon_ai/tree/master/log_scraper 
+ Basic Scrapping idea was taken from https://github.com/vasumv/pokemon_ai/tree/master/log_scraper 
  Scrapped data from top 500 players for ou and genrandom8 battles 
  Scrapped top 100 teams from https://www.babiri.net/#/ 
  
  ## Running the Scrapping Script
  
- To run the script python log_scrapper.py with db_path as arguement
- Eg : python3 log_scraper.py  db_path: database_for_scrapping.db 
+ To run the script python scrapping_replays_showndown.py with db_path as an argument
+ Eg : python3 scrapping_replays_showndown.py  db_path: database_for_scrapping.db
  
  
