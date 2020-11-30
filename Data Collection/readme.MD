@@ -30,7 +30,7 @@ This would help us in forming the Pokémon teams if required.
  
  
  Basic Scrapping idea was taken from https://github.com/vasumv/pokemon_ai/tree/master/log_scraper 
- Scrapped data from top 500 players for ou and genrandom8 battles 
+
  Scrapped top 100 teams from https://www.babiri.net/#/ 
  
  ## Running the Scrapping Script
