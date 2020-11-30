@@ -18,8 +18,10 @@ Tarun Ravikumar, travikum@usc.edu
 The goals of this project include:
 
 1. To build PokéBot Agent which chooses the best optimal move each turn, given the current state of both teams using Deep Q learning 
-2. To explore Agent playing Double battles games 
-3. To predict the winning percentage after each move
+2. To predict the winning percentage after each move
+
+
+Website Link: https://cs527applied-machine-learning-for-games.github.io/Pok-bot/
 
 
 ## References:
