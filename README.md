@@ -1,16 +1,16 @@
 # Pokébot
 
 
-## Team Members:
+## Team Members
 
-Abhilash Pandurangan, ap57160@usc.edu
-Aishwarya Mustoori, mustoori@usc.edu
-Joseph Badra, jbadra@usc.edu
-Mrunal Deshmukh, mndeshmu@usc.edu
-Nilay Pachauri, pachauri@usc.edu
-Ruicheng Li, ruicheng@usc.edu
-Ruoyu Chen, ruoyuche@usc.edu
-Tarun Ravikumar, travikum@usc.edu
+1. Abhilash Pandurangan, ap57160@usc.edu
+2. Aishwarya Mustoori, mustoori@usc.edu
+3. Joseph Badra, jbadra@usc.edu
+4. Mrunal Deshmukh, mndeshmu@usc.edu
+5. Nilay Pachauri, pachauri@usc.edu
+6. Ruicheng Li, ruicheng@usc.edu
+7. Ruoyu Chen, ruoyuche@usc.edu
+8. Tarun Ravikumar, travikum@usc.edu
 
 
 ## Introduction 
@@ -29,6 +29,8 @@ The goals of this project include:
 Website Link: https://cs527applied-machine-learning-for-games.github.io/Pok-bot/
 
 Heroku Application Link: http://usc-pokemon-showdown.herokuapp.com-80.psim.us/
+
+Google Drive Link for data : https://drive.google.com/drive/folders/1tu7qDDw8NLILY4DnVYujWGTD0fcOlu4a?usp=sharing
 
 
 ## References:
